@@ -1,0 +1,13 @@
+*************************************Beam profile export********************************************
+-----------------------------------------------------------------------------------------------------
+Purpose: 
+%  find the proper values in fitting curve with 13.5 & 50 % position.
+%  Export the corronsponding excel 
+%  Examine the fitting-curve in imgs folder
+-----------------------------------------------------------------------------------------------------
+Please follow the steps below:
+1. Build a new folder with rawdatas
+2. Run the 'main.py', there would produce some information in 'info.ini' for using 'export.py' later
+3. Run the 'export.py', you will get the final excel in Desktop !
+4. If you want to restart step1,2, please clear all the content in info.ini manually
+
