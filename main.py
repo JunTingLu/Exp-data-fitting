@@ -20,10 +20,10 @@ from keras.optimizers import Adam
 
 """ setup file """
 # 取出相匹配的檔案
-target_path=r'C:/Users/Cloudlight Optics/Desktop/XPHOR_2/*.xls'
+target_path=r'*.xls'
 name_list=glob.glob((target_path))
 f=DataFrame()
-filename = "C:/Users/Cloudlight Optics/Desktop/beam-pofile-loader/info.ini"
+filename = "./info.ini"
 # choose file with 150mm and 147mm or 149mm
 name_box=['150mm','147mm','149mm']
 
@@ -52,7 +52,7 @@ def build_model(hp):
     model.compile(optimizer=Adam(hp.Choice('learning_rate', values=[0.0002,0.0004,0.0006,0.0008])), loss='mse', metrics=['accuracy'])
     return model
 
-# tuner = RandomSearch(
+# tuner = RandomSearch_method(
 #     build_model,
 #     objective='mse',
 #     max_trials=5,
@@ -80,14 +80,14 @@ def ML(px,py):
     return y_pred
 
 
-""" Algorithm to search proper value """
+""" Algorithm to Search_method proper value """
 # normalized data
 def normalize_y(input_y):
   n_y=(input_y-min(input_y))/(max(input_y)-min(input_y))
   return n_y
 
 # fit function 
-def search_find_Y(input_x,input_y,find_value):
+def Search_method(input_x,input_y,find_value):
   # build the pivot X to save left, right data
   pivot=input_x
   pivot_len=len(pivot)//2
@@ -123,10 +123,10 @@ def search_find_Y(input_x,input_y,find_value):
 # data result
 def show_result(input_x,input_y,find_value_1,find_value_2):
     # position at 13.5%
-    min_l1,min_r1,closed_x1=search_find_Y(input_x,input_y,find_value_1)
+    min_l1,min_r1,closed_x1=Search_method(input_x,input_y,find_value_1)
     value_x1=abs(float(closed_x1[0])-float(closed_x1[1]))
     # position at 50%
-    min_l2,min_r2,closed_x2=search_find_Y(input_x,input_y,find_value_2)
+    min_l2,min_r2,closed_x2=Search_method(input_x,input_y,find_value_2)
     value_x2=abs(float(closed_x2[0])-float(closed_x2[1]))
     print("(13.5-percent) The min dist in left:%f, The min dist in right:%f , (50-percent)  The min dist in left:%f, The min dist in right:%f:" %(min_l1,min_r1,min_l2,min_r2))
     print("(13.5-percent) The proper X: %f,%f ; (50-percent)  The proper X: %f,%f" %(float(closed_x1[0]),float(closed_x1[1]),float(closed_x2[0]),float(closed_x2[1])))
@@ -140,13 +140,13 @@ def run_ML(x1,y1,x2,y2):
   x2=normalize_y(x2) 
   y1=normalize_y(y1) 
   y2=normalize_y(y2) 
-  # predictiob from ML
+  # prediction from ML
   y_pred_profile_x= ML(x1,y1)
   y_pred_profile_y= ML(x2,y2)
   return y1,y2,y_pred_profile_x,y_pred_profile_y
 
 # write in ini file to save parameters
-def write_ini(x1,y_pred_profile_x,x2,y_pred_profile_y,find_value_1,find_value_2):
+def write_preparation(x1,y_pred_profile_x,x2,y_pred_profile_y,find_value_1,find_value_2):
   print('150mm/147mm  X profile')
   value_x_profile_1,value_x_profile_2=show_result(x1,y_pred_profile_x,find_value_1,find_value_2)
   print('150mm/147mm  Y profile')
@@ -168,7 +168,7 @@ def cfg(config,input_name,value_x_profile_1,value_x_profile_2,value_y_profile_1,
 
 
 """ plot """
-def plot(x_in,y_in,y_pred ,input_profile_name,Name):
+def imgplot(x_in,y_in,y_pred ,input_profile_name,Name):
  # plot the results
     fig=plt.figure(figsize=(7,5))
     plt.title('ML curve-fitting')
@@ -179,7 +179,7 @@ def plot(x_in,y_in,y_pred ,input_profile_name,Name):
     plt.legend()
     plt.savefig(f'./imgs/fitting-curve_{input_profile_name}_{Name}.png')
 
-# read corrospond data
+# read corresponding data
 for idx in name_list:
     # profile name
     profile_name=['X-profile','Y-profile']
@@ -191,14 +191,14 @@ for idx in name_list:
     config.set('fit xls files'+f_basename,'file list',str(idx))
     
     if any(name in f_name for name in name_box):
-       # get input parameters
+      # get input parameters
       find_value_1,find_value_2,x1,y1,x2,y2=parameters(f)
       # get the training result
       y1,y2,y_pred_profile_x,y_pred_profile_y=run_ML(x1,y1,x2,y2)
       # prepare to write in ini file
-      value_x_profile_1,value_x_profile_2,value_y_profile_1,value_y_profile_2=write_ini(x1,y_pred_profile_x,x2,y_pred_profile_y,find_value_1,find_value_2)
+      value_x_profile_1,value_x_profile_2,value_y_profile_1,value_y_profile_2=write_preparation(x1,y_pred_profile_x,x2,y_pred_profile_y,find_value_1,find_value_2)
       # config function
       cfg(config,f_name,value_x_profile_1,value_x_profile_2,value_y_profile_1,value_y_profile_2)
       # plot the curve
-      plot(x1,y1,y_pred_profile_x,profile_name[0], f_basename)
-      plot(x2,y2,y_pred_profile_y,profile_name[1], f_basename)
+      imgplot(x1,y1,y_pred_profile_x,profile_name[0], f_basename)
+      imgplot(x2,y2,y_pred_profile_y,profile_name[1], f_basename)
