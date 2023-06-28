@@ -7,7 +7,21 @@
 * Keras 框架
 * python
 # 檔案資料夾說明範例
-* main.py 為主執行檔
+  <table>
+   <tr>
+    <td>main.py</td>
+    <td>主執行檔，進行模型預測及最佳值計算</td>
+  </tr>
+    <tr>
+    <td>export.py</td>
+    <td>匯出main.py所得到之數據並最終以excel格式產出</td>
+  </tr>
+     <tr>
+    <td>info.ini</td>
+    <td>紀錄main.py所計算之數據</td>
+  </tr>
+  </table>
+  
 # 開發環境
  Visual Stdio 
 
