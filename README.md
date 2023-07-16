@@ -8,6 +8,7 @@
 1.確認數據格式為.xlsx <br>
 2.執行main.py後會將當前計算的數值存到info.ini檔案中 <br>
 3.執行export.py 將計算完成之數據以pandas表格匯出 <br>
+ <br>
   <table>
    <tr>
     <td>main.py</td><td>主執行檔，進行模型預測及最佳值計算</td>
