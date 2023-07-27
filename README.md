@@ -28,7 +28,7 @@
   
 <h2>程式語言和套件</h2> 
 
- - Python
+ - Python 3.8
  - Keras
 
  
